@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liuyu.miaosha.dao.OrderSequenceDOMapper" >
+  <resultMap id="BaseResultMap" type="com.liuyu.miaosha.dataobject.OrderSequenceDO" >
+    <result column="current_value" property="currentValue" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="step" property="step" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.liuyu.miaosha.dataobject.OrderSequenceDO" >
+    insert into order_sequence (current_value, name, step
+      )
+    values (#{currentValue,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{step,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.liuyu.miaosha.dataobject.OrderSequenceDO" >
+    insert into order_sequence
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="currentValue != null" >
+        current_value,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="step != null" >
+        step,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="currentValue != null" >
+        #{currentValue,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="step != null" >
+        #{step,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateValue">
+    UPDATE order_sequence
+    SET current_value=#{value}
+  </update>
+
+  <select id="selectByName" resultMap="BaseResultMap">
+    SELECT current_value,name,step
+    FROM order_sequence
+    WHERE name = #{name} for update
+  </select>
+</mapper>

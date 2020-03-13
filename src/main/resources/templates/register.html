@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link href="../static/assets/global/plugins/bootstrap/css/bootstrap.css"  rel="stylesheet" type="text/css" />
+    <link href="../static/assets/global/css/components.css" rel="stylesheet" type="text/css" />
+    <link href="../static/assets/admin/pages/css/login.css" rel="stylesheet" type="text/css" />
+
+    <script src="../static/assets/global/plugins/jquery-1.11.0.min.js"></script>
+
+
+</head>
+
+<body class="login">
+<div class="content">
+    <h3 class="form-title">注册</h3>
+    <div class="form-group">
+        <label class="control-label">邮箱地址</label>
+        <div >
+            <input  class="form-control" type="text" placeholder="邮箱地址" name = "email" id = "email"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">验证码</label>
+        <div >
+            <input  class="form-control" type="text" placeholder="验证码" name = "otp" id = "otp"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">姓名</label>
+        <div >
+            <input  class="form-control" type="text" placeholder="姓名" name = "name" id = "name"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">电话号码</label>
+        <div >
+            <input  class="form-control" type="text" placeholder="电话号码" name = "telphone" id = "telphone"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">性别</label>
+        <div >
+            <input  class="form-control" type="text" placeholder="性别" name = "gender" id = "gender"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">年龄</label>
+        <div >
+            <input  class="form-control" type="text" placeholder="年龄" name = "age" id = "age"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">密码</label>
+        <div >
+            <input  class="form-control" type="password" placeholder="密码" name = "password" id = "password"/>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button class="btn blue"  id="regist" type="submit">
+            注册
+        </button>
+    </div>
+</div>
+</body>
+<script>
+    jQuery(document).ready(function () {
+        $("#regist").on("click",function () {
+            if($("#email").val()==''){
+                alert("邮箱地址不能为空")
+                return;
+            }
+
+            if($("#otp").val()==''){
+                alert("验证码不能为空")
+                return;
+            }
+
+            if($("#name").val()==''){
+                alert("姓名不能为空")
+                return;
+            }
+
+            if($("#gender").val()==''){
+                alert("性别不能为空")
+                return;
+            }
+
+            if($("#age").val()==''){
+                alert("年龄不能为空")
+                return;
+            }
+
+            // if($("#telphone").val()==''){
+            //     alert("电话不能不能为空")
+            //     return;
+            // }
+
+            if($("#password").val()==''){
+                alert("密码不能为空")
+                return;
+            }
+
+
+
+            $.ajax({
+                type:"POST",
+                contentType:"application/x-www-form-urlencoded",
+                url:"http://localhost:8080/user/register",
+                data:{
+                    "email":$("#email").val(),
+                    "otp":$("#otp").val(),
+                    "name":$("#name").val(),
+                    "telphone":$("#telphone").val(),
+                    "gender":$("#gender").val(),
+                    "age":$("#age").val(),
+                    "password":$("#password").val()
+                },
+                xhrFields:{withCredentials:true},
+                success:function (data) {
+                    if(data.status=="success"){
+                        alert("注册成功")
+                    }else {
+                        alert("注册失败，原因为："+data.data.errorMassage);
+                    }
+                },
+                error:function (data) {
+                    alert("注册失败，原因为："+data.responseText)
+                }
+            })
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../static/assets/global/plugins/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href="../static/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+    <link href="../static/assets/admin/pages/css/login.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../static/assets/global/plugins/jquery-1.11.0.min.js"></script>
+
+
+</head>
+
+<body >
+<div class="content">
+    <h3 class="form-title">商品列表</h3>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>商品名</th>
+                    <th>商品图片</th>
+                    <th>商品描述</th>
+                    <th>商品价格</th>
+                    <th>商品销量</th>
+
+                </tr>
+            </thead>
+
+            <tbody id="container">
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+</body>
+<script>
+    var g_iteamList = [];
+    jQuery(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                contentType: "application/x-www-form-urlencoded",
+                url: "http://localhost:8080/iteam/getlist",
+
+                xhrFields: {withCredentials: true},
+                success: function (data) {
+                    if (data.status == "success") {
+                       g_iteamList = data.data;
+                       //alert(data.data);
+                       reloadDom();
+                    } else {
+                        alert("获取商品列表失败，原因为：" + data.data.errorMassage);
+                    }
+                },
+                error: function (data) {
+                    alert("获取商品列表失败，原因为：" + data.responseText)
+                }
+            })
+        })
+
+    function reloadDom() {
+        for(var i=0;i<g_iteamList.length;i++){
+            var iteamVO = g_iteamList[i];
+            //alert(iteamVO.price);
+            var dom = "<tr data-id='"+iteamVO.id+"' id='iteamDetail"+iteamVO.id+"'><td>"+iteamVO.title+"</td><td><img src='"+iteamVO.imgUrl+"'/></td><td>"+iteamVO.description+"</td><td>"+iteamVO.price+"</td><td>"+iteamVO.sales+"</td></tr>";
+            $("#container").append($(dom));
+
+            $("#iteamDetail"+iteamVO.id).on("click",function (e) {
+                var id = $(this).data("id");
+                window.location.href="iteamDetail.html?id="+id;
+            })
+
+        }
+
+    }
+
+
+</script>
+</html>
