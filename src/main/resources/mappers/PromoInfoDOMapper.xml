@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liuyu.miaosha.dao.PromoInfoDOMapper" >
+  <resultMap id="BaseResultMap" type="com.liuyu.miaosha.dataobject.PromoInfoDO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="promo_name" property="promoName" jdbcType="VARCHAR" />
+    <result column="promo_price" property="promoPrice" jdbcType="DOUBLE" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="iteam_id" property="iteamId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, promo_name, promo_price, start_time, end_time, iteam_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from promo_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from promo_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.liuyu.miaosha.dataobject.PromoInfoDO" >
+    insert into promo_info (id, promo_name, promo_price, 
+      start_time, end_time, iteam_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{promoName,jdbcType=VARCHAR}, #{promoPrice,jdbcType=DOUBLE}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{iteamId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.liuyu.miaosha.dataobject.PromoInfoDO" >
+    insert into promo_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="promoName != null" >
+        promo_name,
+      </if>
+      <if test="promoPrice != null" >
+        promo_price,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="iteamId != null" >
+        iteam_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="promoName != null" >
+        #{promoName,jdbcType=VARCHAR},
+      </if>
+      <if test="promoPrice != null" >
+        #{promoPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="iteamId != null" >
+        #{iteamId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.liuyu.miaosha.dataobject.PromoInfoDO" >
+    update promo_info
+    <set >
+      <if test="promoName != null" >
+        promo_name = #{promoName,jdbcType=VARCHAR},
+      </if>
+      <if test="promoPrice != null" >
+        promo_price = #{promoPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="iteamId != null" >
+        iteam_id = #{iteamId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.liuyu.miaosha.dataobject.PromoInfoDO" >
+    update promo_info
+    set promo_name = #{promoName,jdbcType=VARCHAR},
+      promo_price = #{promoPrice,jdbcType=DOUBLE},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      iteam_id = #{iteamId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByIteamId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from promo_info
+    where iteam_id = #{iteamId,jdbcType=INTEGER}
+  </select>
+
+</mapper>
