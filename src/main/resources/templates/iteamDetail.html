@@ -15,6 +15,12 @@
 <body class="login">
 <div class="content">
     <h3 class="form-title">商品详情</h3>
+    <div class="form-group" id="promoStartDate">
+        <label class="control-label" style="collapse: red"></label>
+        <div >
+            <label class="control-label" id="promoDate" style="color: red;"></label>
+        </div>
+    </div>
     <div class="form-group">
         <label class="control-label">商品名称</label>
         <div >
@@ -33,10 +39,16 @@
             <label class="control-label" id="description"></label>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" id="normalPriceContainer">
         <label class="control-label">商品价格</label>
         <div >
             <label class="control-label" id="price"></label>
+        </div>
+    </div>
+    <div class="form-group" id="promoPriceContainer">
+        <label class="control-label" style="collapse: red">秒杀价</label>
+        <div >
+            <label class="control-label" id="promoprice" style="color: red;"></label>
         </div>
     </div>
     <div class="form-group">
@@ -62,6 +74,7 @@
 <script>
 
     jQuery(document).ready(function () {
+        var g_iteamInfo = null;
 
         //alert(getQueryString("id")+"sfsff")
         $.ajax({
@@ -72,8 +85,25 @@
 
             xhrFields:{withCredentials:true},
             success:function (data) {
+                g_iteamInfo = data.data;
+
                 if(data.status=="success"){
-                    reloadDom(data.data);
+                    $("#title").text(data.data.title);
+                    $("#description").text(data.data.description);
+                    $("#price").text(data.data.price);
+                    $("#stock").text(data.data.stock);
+                    $("#sales").text(data.data.sales);
+                    $("#imgUrl").attr("src",data.data.imgUrl);
+                    $("#promoPriceContainer").hide();
+
+
+                    if(data.data.status==1||data.data.status==2){
+                        $('#promoprice').text(data.data.promoPrice);
+                        $("#promoPriceContainer").show();
+
+                        reloadDom(data.data);
+                    }
+
                 }else {
                     alert("获取商品详情失败，原因为："+data.data.errorMassage);
                 }
@@ -89,7 +119,8 @@
                     url:"http://localhost:8080/order/create",
                     data:{
                         id:getQueryString("id"),
-                        count:1
+                        count:1,
+                        promoId:g_iteamInfo.promoId
                     },
                     xhrFields:{withCredentials:true},
                     success:function (data) {
@@ -97,6 +128,7 @@
                             window.location.reload()
                         }else {
                             alert("下单失败，原因为："+data.data.errorMassage);
+
                         }
                     },
                     error:function (data) {
@@ -127,13 +159,90 @@
     }
 
     function reloadDom(data) {
-        $("#title").text(data.title);
-        $("#description").text(data.description);
-        $("#price").text(data.price);
-        $("#stock").text(data.stock);
-        $("#sales").text(data.sales);
-        $("#imgUrl").attr("src",data.imgUrl);
+
+        //开始时间
+        var startDate = new Date(data.startDate);
+        //结束时间
+        var endDate = new Date(data.endDate);
+       // 当前时间
+        var nowDate = new Date();
+
+
+
+
+
+        if(nowDate<startDate){
+            //秒杀活动还未开始
+            $("#promoDate").text('秒杀活动将于'+data.startDate+'开始');
+            $("#promoPrice").text(data.promoPrice);
+            $("#normalPriceContainer").hide();
+            $("#buy").attr('disabled',true)
+
+        }
+        else if(nowDate>startDate&&nowDate<endDate){
+            $("#buy").attr('disabled',false);
+            //相差的总秒数
+            var totalSeconds = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);
+            //天数
+            var days = Math.floor(totalSeconds / (60 * 60 * 24));
+            //取模（余数）
+            var modulo = totalSeconds % (60 * 60 * 24);
+            //小时数
+            var hours = Math.floor(modulo / (60 * 60));
+            modulo = modulo % (60 * 60);
+            //分钟
+            var minutes = Math.floor(modulo / 60);
+            //秒
+            var seconds = modulo % 60;
+
+            //输出到页面
+            $("#promoStartDate").text('距活动结束还有:'+ days + '天'+ hours + '小时' + minutes + '分钟'+ seconds+'秒');
+
+        }else{
+            $("#promoStartDate").text('');
+            $("#normalPriceContainer").show();
+            $("#promoPriceContainer").hide();
+
+
+        }
+
+        //延迟一秒执行自己
+        setTimeout(function () {
+            reloadDom(data);
+        }, 1000)
 
     }
+
+    function TimeDown(data) {
+
+        //开始时间
+        var startDate = new Date(startDateStr);
+        //结束时间
+        var endDate = new Date(endDateStr);
+        //当前时间
+        var nowDate = new Date();
+
+
+        //相差的总秒数
+        var totalSeconds = parseInt((endDate - nowDate) / 1000);
+        //天数
+        var days = Math.floor(totalSeconds / (60 * 60 * 24));
+        //取模（余数）
+        var modulo = totalSeconds % (60 * 60 * 24);
+        //小时数
+        var hours = Math.floor(modulo / (60 * 60));
+        modulo = modulo % (60 * 60);
+        //分钟
+        var minutes = Math.floor(modulo / 60);
+        //秒
+        var seconds = modulo % 60;
+        //输出到页面
+        document.getElementById(id).innerHTML = "剩余抢购:" + days + "天" + hours + "：" + minutes + "：" + seconds;
+        //延迟一秒执行自己
+        setTimeout(function () {
+            TimeDown(id, endDateStr);
+        }, 1000)
+    }
+
 </script>
 </html>

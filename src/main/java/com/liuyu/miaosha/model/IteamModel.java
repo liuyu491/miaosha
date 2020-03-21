@@ -28,6 +28,16 @@ public class IteamModel {
     @NotNull(message = "商品图片连接不能为空")
     private String imgUrl;
 
+    private PromoModel promoModel;
+
+    public PromoModel getPromoModel() {
+        return promoModel;
+    }
+
+    public void setPromoModel(PromoModel promoModel) {
+        this.promoModel = promoModel;
+    }
+
     public int getId() {
         return id;
     }

@@ -15,6 +15,6 @@ import java.util.List;
 public interface OrderService {
     OrderModel createOrder(OrderIteamModel orderIteamModel) throws BusinessException;
     OrderModel createOrder(List<CartIteamModel> cartIteamModelList);
-    OrderIteamModel createOrderIteam(int iteamId,int userId,int count) throws BusinessException;
+    OrderIteamModel createOrderIteam(int iteamId, int userId, int count, Integer promoId) throws BusinessException;
     OrderModel getOrderById();
 }

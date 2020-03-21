@@ -14,7 +14,7 @@ public interface IteamService {
 
     IteamModel getIteamById(int iteamId) throws BusinessException;
 
-    boolean decreaseStock(int iteamId,int count);
+    boolean decreaseStock(int iteamId, int count);
 
-    boolean increaseSales(int iteamId,int count);
+    boolean increaseSales(int iteamId, int count);
 }

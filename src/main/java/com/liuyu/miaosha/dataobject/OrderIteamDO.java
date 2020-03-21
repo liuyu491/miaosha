@@ -15,6 +15,16 @@ public class OrderIteamDO {
 
     private Integer count;
 
+    private Integer promoId;
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
+
     public Integer getId() {
         return id;
     }

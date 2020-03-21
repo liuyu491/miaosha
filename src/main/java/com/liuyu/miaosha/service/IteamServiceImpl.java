@@ -7,6 +7,7 @@ import com.liuyu.miaosha.dataobject.IteamStockDO;
 import com.liuyu.miaosha.error.BusinessError;
 import com.liuyu.miaosha.error.BusinessException;
 import com.liuyu.miaosha.model.IteamModel;
+import com.liuyu.miaosha.model.PromoModel;
 import com.liuyu.miaosha.validate.ValidateResult;
 import com.liuyu.miaosha.validate.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +33,9 @@ public class IteamServiceImpl implements IteamService {
 
     @Autowired
     IteamStockDOMapper iteamStockDOMapper;
+
+    @Autowired
+    PromoService promoService;
 
     @Override
     public boolean decreaseStock(int iteamId, int count) {
@@ -99,6 +103,10 @@ public class IteamServiceImpl implements IteamService {
             throw new BusinessException(BusinessError.ITEAM_ERROR,"商品库存查询错误");
         }
         iteamModel.setStock(iteamStockDO.getStock());
+        PromoModel promoModel = promoService.getPromoByIteamId(iteamId);
+        if(promoModel!=null&&promoModel.getStatus()!=3){
+            iteamModel.setPromoModel(promoModel);
+        }
         return iteamModel;
     }
 

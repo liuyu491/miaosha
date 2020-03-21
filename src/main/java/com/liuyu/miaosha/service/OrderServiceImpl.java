@@ -1,20 +1,11 @@
 package com.liuyu.miaosha.service;
 
-import com.liuyu.miaosha.dao.IteamInfoDOMapper;
-import com.liuyu.miaosha.dao.OrderSequenceDOMapper;
-import com.liuyu.miaosha.dao.OrdersDOMapper;
-import com.liuyu.miaosha.dao.OrderIteamDOMapper;
+import com.liuyu.miaosha.dao.*;
 
-import com.liuyu.miaosha.dataobject.IteamInfoDO;
-import com.liuyu.miaosha.dataobject.OrderSequenceDO;
-import com.liuyu.miaosha.dataobject.OrdersDO;
-import com.liuyu.miaosha.dataobject.OrderIteamDO;
+import com.liuyu.miaosha.dataobject.*;
 import com.liuyu.miaosha.error.BusinessError;
 import com.liuyu.miaosha.error.BusinessException;
-import com.liuyu.miaosha.model.CartIteamModel;
-import com.liuyu.miaosha.model.IteamModel;
-import com.liuyu.miaosha.model.OrderIteamModel;
-import com.liuyu.miaosha.model.OrderModel;
+import com.liuyu.miaosha.model.*;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +37,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderSequenceDOMapper orderSequenceDOMapper;
 
+    @Autowired
+    PromoService promoService;
+
     @Override
     @Transactional
     public OrderModel createOrder(OrderIteamModel orderIteamModel) throws BusinessException {
@@ -74,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
         orderIteamDO.setIteamId(orderIteamModel.getIteamId());
         orderIteamDO.setOrderId(orderId);
         orderIteamDO.setUserId(orderIteamModel.getUserId());
+        orderIteamDO.setPromoId(orderIteamModel.getPromoId());
         orderIteamDOMapper.insertSelective(orderIteamDO);
         OrdersDO order = new OrdersDO();
         order.setId(orderId);
@@ -81,7 +76,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderPrice(orderIteamModel.getIteamPrice().multiply(BigDecimal.valueOf(orderIteamModel.getCount())).doubleValue());
         order.setUserId(orderIteamModel.getUserId());
         ordersDOMapper.insert(order);
-
         OrderModel orderModel = new OrderModel();
         BeanUtils.copyProperties(order,orderModel);
         orderModel.setOrderPrice(BigDecimal.valueOf(order.getOrderPrice()));
@@ -97,18 +91,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderIteamModel createOrderIteam(int iteamId, int userId, int count) throws BusinessException {
+    public OrderIteamModel createOrderIteam(int iteamId, int userId, int count,Integer promoId) throws BusinessException {
         IteamInfoDO iteamInfoDO = iteamInfoDOMapper.selectByPrimaryKey(iteamId);
         if(iteamInfoDO==null){
             throw new BusinessException(BusinessError.ITEAM_ERROR,"商品不存在");
         }
+        PromoModel promoModel = null;
+        if(promoId!=null){
+            promoModel = promoService.getPromoById(promoId);
+        }
+
         OrderIteamModel orderIteamModel = new OrderIteamModel();
         BeanUtils.copyProperties(iteamInfoDO,orderIteamModel);
+        if(promoModel!=null&&promoModel.getStatus()==2){
+            orderIteamModel.setIteamPrice(promoModel.getPromoPrice());
+            orderIteamModel.setPromoId(promoId);
+        }
+        else {
+            orderIteamModel.setIteamPrice(BigDecimal.valueOf(iteamInfoDO.getPrice()));
+        }
         orderIteamModel.setCount(count);
         orderIteamModel.setIteamId(iteamId);
-        orderIteamModel.setIteamPrice(BigDecimal.valueOf(iteamInfoDO.getPrice()));
         orderIteamModel.setImgUrl(iteamInfoDO.getImgUrl());
         orderIteamModel.setUserId(userId);
+
         return orderIteamModel;
     }
 

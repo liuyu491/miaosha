@@ -6,6 +6,7 @@ import com.liuyu.miaosha.error.BusinessException;
 import com.liuyu.miaosha.model.IteamModel;
 import com.liuyu.miaosha.response.CommonReturnType;
 import com.liuyu.miaosha.service.IteamService;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,7 @@ public class IteamController extends BaseController {
     @ResponseBody
     public CommonReturnType getIteam(@RequestParam("id") int id) throws BusinessException {
         IteamModel iteamModel = iteamService.getIteamById(id);
+
         return new CommonReturnType("success",convertVOFromIteamModel(iteamModel));
     }
 
@@ -58,7 +61,20 @@ public class IteamController extends BaseController {
     private IteamVO convertVOFromIteamModel(IteamModel iteamModel){
         IteamVO iteamVO = new IteamVO();
         BeanUtils.copyProperties(iteamModel,iteamVO);
-        return iteamVO;
+        if(iteamModel.getPromoModel()==null){
+            iteamVO.setStatus(0);
+            return iteamVO;
+        }
+        else{
+            iteamVO.setStatus(iteamModel.getPromoModel().getStatus());
+            iteamVO.setPromoPrice(iteamModel.getPromoModel().getPromoPrice());
+            DateTime startTime = iteamModel.getPromoModel().getStartTime();
+            DateTime endTime = iteamModel.getPromoModel().getEndTime();
+            iteamVO.setPromoId(iteamModel.getPromoModel().getId());
+            iteamVO.setStartDate(startTime.toString("yyyy/MM/dd hh:mm:ss"));
+            iteamVO.setEndDate(endTime.toString("yyyy/MM/dd hh:mm:ss"));
+            return iteamVO;
+        }
 
     }
 }

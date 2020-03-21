@@ -9,9 +9,10 @@
     <result column="iteam_price" property="iteamPrice" jdbcType="DOUBLE" />
     <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
     <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="promo_id" property="promoId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, iteam_id, order_id, user_id, iteam_price, img_url, count
+    id, iteam_id, order_id, user_id, iteam_price, img_url, count, promo_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,10 +27,10 @@
   <insert id="insert" parameterType="com.liuyu.miaosha.dataobject.OrderIteamDO" >
     insert into order_iteam (id, iteam_id, order_id, 
       user_id, iteam_price, img_url, 
-      count)
+      count, promo_id)
     values (#{id,jdbcType=INTEGER}, #{iteamId,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, 
       #{userId,jdbcType=INTEGER}, #{iteamPrice,jdbcType=DOUBLE}, #{imgUrl,jdbcType=VARCHAR}, 
-      #{count,jdbcType=INTEGER})
+      #{count,jdbcType=INTEGER}, #{promoId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.liuyu.miaosha.dataobject.OrderIteamDO" >
     insert into order_iteam
@@ -55,6 +56,9 @@
       <if test="count != null" >
         count,
       </if>
+      <if test="promoId != null" >
+        promo_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -77,6 +81,9 @@
       </if>
       <if test="count != null" >
         #{count,jdbcType=INTEGER},
+      </if>
+      <if test="promoId != null" >
+        #{promoId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -104,6 +111,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.liuyu.miaosha.dataobject.OrderIteamDO" >
     update order_iteam
     set iteam_id = #{iteamId,jdbcType=INTEGER},

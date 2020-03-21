@@ -18,6 +18,16 @@ public class OrderIteamModel {
 //购买的商品的数量
     private Integer count;
 
+    //秒杀活动Id
+    private Integer promoId;
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
 
     public Integer getId() {
         return id;

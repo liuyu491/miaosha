@@ -24,6 +24,61 @@ public class IteamVO {
 
     private String imgUrl;
 
+    //秒杀活动Id
+    private int promoId;
+
+    //秒杀活动价格
+    private BigDecimal promoPrice;
+
+    //秒杀活动开始时间
+    private String startDate;
+
+    //秒杀活动结束时间
+    private String endDate;
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    //秒杀活动状态 0表示没有秒杀活动，1表示秒杀活动未开始，2表是正在进行，3表示结束
+    private int status;
+
+    public int getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(int promoId) {
+        this.promoId = promoId;
+    }
+
+    public BigDecimal getPromoPrice() {
+        return promoPrice;
+    }
+
+    public void setPromoPrice(BigDecimal promoPrice) {
+        this.promoPrice = promoPrice;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
     public int getId() {
         return id;
     }

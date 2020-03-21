@@ -30,7 +30,7 @@ public class OrderController extends BaseController {
     @RequestMapping("/create")
     @ResponseBody
     @Transactional
-    public CommonReturnType create(@RequestParam("id") int iteamId, @RequestParam("count") int count, HttpServletRequest httpServletRequest) throws BusinessException {
+    public CommonReturnType create(@RequestParam("id") int iteamId, @RequestParam("count") int count, @RequestParam(value = "promoId",required = false) int promoId,HttpServletRequest httpServletRequest) throws BusinessException {
         HttpSession session = httpServletRequest.getSession();
         Object user = session.getAttribute("LOGINUSER");
         if(user==null){
@@ -38,7 +38,7 @@ public class OrderController extends BaseController {
         }
 
 
-        OrderIteamModel orderIteamModel = orderService.createOrderIteam(iteamId,((UserModel)user).getId(),count);
+        OrderIteamModel orderIteamModel = orderService.createOrderIteam(iteamId,((UserModel)user).getId(),count,promoId);
         OrderModel orderModel = orderService.createOrder(orderIteamModel);
         return new CommonReturnType("success",orderIteamModel);
     }
